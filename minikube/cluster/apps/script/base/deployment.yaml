@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: script-deployment
+  labels:
+    app: script
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: script
+  template:
+    metadata:
+      labels:
+        app: script
+    spec:
+      containers:
+        - name: script
+          image: script
+          imagePullPolicy: IfNotPresent

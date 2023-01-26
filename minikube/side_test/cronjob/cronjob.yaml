@@ -1,0 +1,22 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: script-cron
+spec:
+  #imp stuff suspend, success, failed
+  suspend: true
+  successfulJobsHistoryLimit: 2
+  failedJobsHistoryLimit: 1
+  schedule: "* * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: script-cron
+              imagePullPolicy: "IfNotPresent"
+              image: script
+              command:
+                - python
+                - create_file.py
+          restartPolicy: OnFailure

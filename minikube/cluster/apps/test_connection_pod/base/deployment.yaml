@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-connection-pod
+  labels:
+    app: test-connection-pod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: test-connection-pod
+  template:
+    metadata:
+      labels:
+        app: test-connection-pod
+    spec:
+      containers:
+        - name: test-connection-pod
+          image: curlimages/curl
+          command:
+            - sleep
+            - infinity

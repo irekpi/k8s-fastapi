@@ -1,0 +1,47 @@
+# https://taskfile.dev
+
+version: '3'
+env:
+  KUBERNETES_VERSION: v1.22.3
+  #k8s - main-k8s
+  NAMESPACE_MAIN: main-k8s
+  CLUSTER_NAME_MAIN: minikube-main
+  #docker
+  IMAGE_NAME: simple-app
+  IMAGE_SCRIPT: script
+
+tasks:
+  #docker
+  build-base:
+    cmds:
+      - docker build -t $IMAGE_NAME -f simple_app/.docker/Dockerfile .
+  run-base:
+    cmds:
+      - docker run --name $IMAGE_NAME -p 8000:8000 simple_app
+  build-script:
+    cmds:
+      - docker build -t $IMAGE_SCRIPT -f script/.docker/Dockerfile ./script
+  run-script:
+    cmds:
+      - docker run --name $IMAGE_SCRIPT $IMAGE_SCRIPT
+  minikube-build:
+    cmds:
+      - docker build -t $IMAGE_NAME -f simple_app/.docker/Dockerfile ./simple_app
+      - docker build --no-cache -t $IMAGE_SCRIPT -f script/.docker/Dockerfile ./script
+  port-forward:
+    cmds:
+      - kubectl port-forward svc/simple-app  8000:8000 -n k8s-learning
+  create-cronjob:
+    cmds:
+      - kubectl create -f minikube/side_test/cronjob/cronjob.yaml
+  #k8s - main-k8s
+  main-load:
+    deps: [ minikube-build ]
+    cmds:
+      - minikube image load $IMAGE_NAME -p $CLUSTER_NAME_MAIN
+      - minikube image load $IMAGE_SCRIPT -p $CLUSTER_NAME_MAIN
+  main-create:
+    cmds:
+      - minikube start --kubernetes-version=$KUBERNETES_VERSION --cpus=4 --driver=docker --addons=metrics-server -p $CLUSTER_NAME_MAIN --mount --mount-string="$(pwd):/mount-data"
+      - kubectl create ns $NAMESPACE_MAIN  || true
+      - kubectl config set-context $CLUSTER_NAME_MAIN --namespace=$NAMESPACE_MAIN

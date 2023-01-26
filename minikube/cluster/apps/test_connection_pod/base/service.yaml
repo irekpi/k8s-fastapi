@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-connection-pod-service
+spec:
+  selector:
+    app: test-connection-pod
+  ports:
+    - port: 8002
+      targetPort: 8002
+      protocol: TCP

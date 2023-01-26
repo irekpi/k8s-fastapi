@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: script-deployment
+spec:
+  template:
+    spec:
+      containers:
+        - name: script
+          image: script
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: test-pvc-claim
+              mountPath: /test-data1
+      volumes:
+        - name: test-pvc-claim
+          persistentVolumeClaim:
+            claimName: test-pvc-claim
