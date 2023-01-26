@@ -1,11 +1,11 @@
 ### Simple Fastapi App with KUBERNETES
 
-#Base
+# Base
 
 Minikube k8s based  Simple backend application that is hosted on cluster.
 
-##Requirements
-####Project:
+## Requirements
+#### Project:
    
  - is base on minikube k8s cluster
  - uses Dockerfiles for building images
@@ -28,7 +28,7 @@ Fastapi requirements includes:
    - uvicorn==0.20.0
 
 
-####Building
+#### Building
 
 Project is operated via Taskfile. Base commands are presented below:
   ####k8s - main-k8s
